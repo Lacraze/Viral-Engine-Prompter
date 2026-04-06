@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Viral Idea Engine</title>
+    <script>
+      // Defensive script to prevent "Cannot set property fetch of #<Window> which has only a getter"
+      (function() {
+        try {
+          const descriptor = Object.getOwnPropertyDescriptor(window, 'fetch');
+          if (descriptor && !descriptor.set && descriptor.get) {
+            // It's a getter-only property. We try to make it configurable or at least handle the error.
+            // Some environments/polyfills try to overwrite fetch. 
+            // We can't easily fix the 'set' if it's not configurable, but we can try to define a no-op setter.
+            Object.defineProperty(window, 'fetch', {
+              get: descriptor.get,
+              set: function() { console.warn('Prevented overwrite of window.fetch'); },
+              configurable: true
+            });
+          }
+        } catch (e) {
+          // Ignore errors here to avoid breaking the app further
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
